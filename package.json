@@ -1,8 +1,7 @@
 {
   "scripts": {
-    "dev": "snowpack dev --polyfill-node",
-    "build": "snowpack build",
-    "test": "echo \"This template does not include a test runner by default.\" && exit 1"
+    "dev": "snowpack dev",
+    "build": "snowpack build"
   },
   "dependencies": {
     "@ffmpeg/core": "^0.8.4",
