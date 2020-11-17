@@ -1,15 +1,22 @@
 {
   "scripts": {
-    "start": "snowpack dev",
+    "dev": "snowpack dev --polyfill-node",
     "build": "snowpack build",
     "test": "echo \"This template does not include a test runner by default.\" && exit 1"
   },
   "dependencies": {
+    "@ffmpeg/core": "^0.8.4",
+    "@ffmpeg/ffmpeg": "^0.9.5",
     "vue": "3.0.0"
   },
   "devDependencies": {
     "@snowpack/plugin-dotenv": "^2.0.4",
     "@snowpack/plugin-vue": "^2.2.5",
     "snowpack": "^2.17.1"
+  },
+  "prettier": {
+    "semi": false,
+    "singleQuote": true,
+    "trailingComma": "none"
   }
 }

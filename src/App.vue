@@ -1,60 +1,48 @@
 <template>
-  <div class="App">
-    <header class="App-header">
-      <img src="/logo.svg" class="App-logo" alt="logo" />
-      <p>
-        Edit
-        <code>src/App.vue</code> and save to reload.
-      </p>
-      <a
-        class="App-link"
-        href="https://vuejs.org"
-        target="_blank"
-        rel="noopener noreferrer"
-      >{{ message }}</a>
-    </header>
+  <div class="p-6 mt-12 w-1/2 mx-auto">
+    <div v-if="ready" class="flex flex-col items-start space-y-4">
+      <video v-if="video" :src="videoSrc" controls width="250"></video>
+      <input type="file" @change="(e) => (video = e.target.files[0])" />
+      <button :disabled="!video" @click="convertToGif">Convert</button>
+      <img v-if="gif" :src="gif" width="250" />
+    </div>
+    <p v-else>Loading...</p>
   </div>
 </template>
 
 <script>
+import { createFFmpeg, fetchFile } from '@ffmpeg/ffmpeg'
+const ffmpeg = createFFmpeg({ log: true })
+
 export default {
   data() {
     return {
-      message: "Learn Vue"
-    };
-  }
-};
-</script>
+      ready: false,
+      video: null,
+      gif: null
+    }
+  },
 
-<style>
-.App {
-  text-align: center;
-}
-.App-header {
-  background-color: #f9f6f6;
-  color: #32485f;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-}
-.App-link {
-  color: #00c185;
-}
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-  margin-bottom: 1rem;
-  animation: App-logo-spin infinite 1.6s ease-in-out alternate;
-}
-@keyframes App-logo-spin {
-  from {
-    transform: scale(1);
-  }
-  to {
-    transform: scale(1.06);
+  async mounted() {
+    await ffmpeg.load()
+    this.ready = true
+  },
+
+  computed: {
+    videoSrc() {
+      return URL.createObjectURL(this.video)
+    }
+  },
+
+  methods: {
+    // prettier-ignore
+    async convertToGif() {
+      ffmpeg.FS('writeFile', 'test.mp4', await fetchFile(this.video))
+      await ffmpeg.run('-i', 'test.mp4', '-t', '2.5', '-ss', '2.0', '-f', 'gif', 'out.gif')
+      const data = ffmpeg.FS('readFile', 'out.gif')
+      const url = URL.createObjectURL(new Blob([data.buffer], { type: 'image/gif' }))
+      this.gif = url
+    }
   }
 }
-</style>
+</script>
