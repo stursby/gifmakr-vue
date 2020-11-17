@@ -1,4 +1,4 @@
-# New Project
+# Girmakr Vue
 
 > ✨ Bootstrapped with Create Snowpack App (CSA).
 
